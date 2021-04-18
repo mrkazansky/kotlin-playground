@@ -9,8 +9,8 @@ import kotlin.collections.ArrayList
 
 class Playground {
 
-    val matrix = ArrayList<ArrayList<Int>>()
-    val trace = ArrayList<ArrayList<Int>>()
+    private val matrix = ArrayList<ArrayList<Int>>()
+    private val trace = ArrayList<ArrayList<Int>>()
 
     @Test
     fun example() {

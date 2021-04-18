@@ -9,7 +9,6 @@ import java.util.*
 
 class LineCodeTest1 {
 
-
     @Test
     fun example() {
         print(solution("2(3(hi)2(co)xab2(co))"))

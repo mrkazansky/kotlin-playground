@@ -1,7 +1,6 @@
 package com.example.playground
 
 import org.junit.Test
-import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -44,16 +43,13 @@ class Playground {
             listOf(5, 4).toIntArray(),
             listOf(6, 1).toIntArray()
         ).toTypedArray()
-        val result = solution3(param)
+        val result = solution(param)
         result.forEach {
             println(it)
         }
-        print(solution2(listOf(1, 10, 2, 9, 3, 8, 4, 7, 5, 6).toIntArray(), 20))
-        print(solution1("2(3(hi)2(co)xab2(co))"))
     }
 
-    //    Test 3
-    fun solution3(macaron: Array<IntArray>): Array<String> {
+    private fun solution(macaron: Array<IntArray>): Array<String> {
         val answer = mutableListOf<String>()
         for (i in 0 until 6) {
             matrix.add(ArrayList<Int>().also {
@@ -86,7 +82,7 @@ class Playground {
         return answer.toTypedArray()
     }
 
-    fun push(step: IntArray) {
+    private fun push(step: IntArray) {
         val col = step[0] - 1
         val index = matrix[col].indexOfLast { it == 0 }
         if (index > -1) {
@@ -95,7 +91,7 @@ class Playground {
         }
     }
 
-    fun drop() {
+    private fun drop() {
         var path = moveAvailable()
         while (path.size >= 3) {
             doDrop(path)
@@ -103,7 +99,7 @@ class Playground {
         }
     }
 
-    fun moveAvailable(): MutableList<IntArray> {
+    private fun moveAvailable(): MutableList<IntArray> {
         for (i in 0..5)
             for (j in 0..5) {
                 if (matrix[i][j] != 0) {
@@ -116,7 +112,7 @@ class Playground {
         return mutableListOf()
     }
 
-    fun resetTracing() {
+    private fun resetTracing() {
         trace.forEach {
             it.forEachIndexed { index, _ ->
                 it[index] = 0
@@ -124,7 +120,7 @@ class Playground {
         }
     }
 
-    fun isDropable(x: Int, y: Int): MutableList<IntArray> {
+    private fun isDropable(x: Int, y: Int): MutableList<IntArray> {
         val result = mutableListOf<IntArray>()
         result.add(listOf(x, y).toIntArray())
         if (x >= 6 || y >= 6 || x <= -1 || y <= -1)
@@ -150,7 +146,7 @@ class Playground {
         return result
     }
 
-    fun doDrop(path: MutableList<IntArray>) {
+    private fun doDrop(path: MutableList<IntArray>) {
         path.forEach {
             matrix[it[0]][it[1]] = -1
         }
@@ -162,75 +158,5 @@ class Playground {
                 index = matrix[i].indexOfFirst { item -> item == -1 }
             }
         }
-    }
-
-    //    Test 2
-    fun solution2(A: IntArray, S: Int): Int {
-        var counter: Int = 0
-        var firstIndex = 0
-        var sum = 0L
-        var min = 99999
-        A.forEachIndexed { index, value ->
-            sum += value
-            counter++
-            if (sum >= S) {
-                if (counter < min) {
-                    min = counter
-                }
-                counter--
-                sum -= A[firstIndex]
-                firstIndex = index + 1
-            }
-        }
-        return counter
-    }
-
-    //    Test 1
-    fun solution1(compressed: String): String {
-        var answer = ""
-        val stackResult = Stack<Char>()
-        val stackCalculator = Stack<Char>()
-        compressed.forEach {
-            if (it == ')') {
-                val tempStack = Stack<Char>()
-                while (stackCalculator.peek() != '(') {
-                    tempStack.push(stackCalculator.pop())
-                }
-                stackCalculator.pop()
-                val multi = stackCalculator.pop().toString().toInt()
-
-                val specStack = Stack<Char>()
-                while (!stackCalculator.isEmpty() && stackCalculator.peek() in 'a'..'z') {
-                    specStack.push(stackCalculator.pop())
-                }
-                val stack: CharArray
-                if (tempStack.isEmpty()) {
-                    stack = stackResult.toCharArray()
-                    stackResult.removeAllElements()
-                } else {
-                    stack = tempStack.toCharArray()
-                    tempStack.removeAllElements()
-                }
-                for (i in 0 until multi) {
-                    stack.forEach { item -> tempStack.push(item) }
-                }
-                specStack.forEach { item ->
-                    tempStack.push(item)
-                }
-                stackResult.forEach { item ->
-                    tempStack.push(item)
-                }
-                stackResult.removeAllElements()
-                tempStack.forEach { item ->
-                    stackResult.push(item)
-                }
-            } else {
-                stackCalculator.push(it)
-            }
-        }
-        stackResult.reversed().forEach {
-            answer += it
-        }
-        return answer
     }
 }

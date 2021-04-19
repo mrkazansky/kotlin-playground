@@ -1,62 +1,47 @@
 package com.example.playground
 
 import org.junit.Test
-import java.util.*
 
 /**
  *
  */
 
+@ExperimentalStdlibApi
 class LineCodeTest1 {
 
     @Test
     fun example() {
-        print(solution("2(3(hi)2(co)xab2(co))"))
+        print(solution("2(3(xixi)2(yiyi)zizi2(wiwi)mimimi)"))
     }
 
     private fun solution(compressed: String): String {
         var answer = ""
-        val stackResult = Stack<Char>()
-        val stackCalculator = Stack<Char>()
+        val stackCalculator = ArrayDeque<Char>()
         compressed.forEach {
             if (it == ')') {
-                val tempStack = Stack<Char>()
-                while (stackCalculator.peek() != '(') {
-                    tempStack.push(stackCalculator.pop())
+                val tempStack = ArrayDeque<Char>()
+                while (stackCalculator.last() != '(' && !stackCalculator.isEmpty()) {
+                    tempStack.addLast(stackCalculator.removeLast())
                 }
-                stackCalculator.pop()
-                val multi = stackCalculator.pop().toString().toInt()
-
-                val specStack = Stack<Char>()
-                while (!stackCalculator.isEmpty() && stackCalculator.peek() in 'a'..'z') {
-                    specStack.push(stackCalculator.pop())
-                }
-                val stack: CharArray
-                if (tempStack.isEmpty()) {
-                    stack = stackResult.toCharArray()
-                    stackResult.removeAllElements()
-                } else {
-                    stack = tempStack.toCharArray()
-                    tempStack.removeAllElements()
-                }
+                stackCalculator.removeLast()
+                val multi = stackCalculator.removeLast().toString().toInt()
+                val stack: CharArray = tempStack.toCharArray()
+                tempStack.clear()
                 for (i in 0 until multi) {
-                    stack.forEach { item -> tempStack.push(item) }
+                    stack.forEach { item -> tempStack.addLast(item) }
                 }
-                specStack.forEach { item ->
-                    tempStack.push(item)
+                val specStack = ArrayDeque<Char>()
+                while (!stackCalculator.isEmpty() && stackCalculator.last() in 'a'..'z') {
+                    specStack.addLast(stackCalculator.removeLast())
                 }
-                stackResult.forEach { item ->
-                    tempStack.push(item)
-                }
-                stackResult.removeAllElements()
-                tempStack.forEach { item ->
-                    stackResult.push(item)
-                }
+                tempStack.addAll(specStack)
+                tempStack.reverse()
+                stackCalculator.addAll(tempStack)
             } else {
-                stackCalculator.push(it)
+                stackCalculator.addLast(it)
             }
         }
-        stackResult.reversed().forEach {
+        stackCalculator.forEach {
             answer += it
         }
         return answer
